@@ -21,4 +21,8 @@ struct EarthQuakeConstants {
     struct SettingsViewMetaData {
         static let itemTitle = "Settings"
     }
+    
+    struct APIMetaData {
+        static let restRoot = "https://earthquake.usgs.gov/fdsnws/event/1/"
+    }
 }

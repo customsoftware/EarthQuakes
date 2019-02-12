@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import os
 
 class FirstViewController: UITableViewController, ProgramBuildable {
     var tabItem: UITabBarItem {
@@ -15,9 +16,18 @@ class FirstViewController: UITableViewController, ProgramBuildable {
         return retButton
     }
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+    override func loadView() {
+        super.loadView()
+        createControls()
+        positionControls()
+    }
+    
+    func createControls() {
+        os_log(OSLogType.info, "Here is where we build the controls for the %{public}@ view", EarthQuakeConstants.HomeViewMetaData.itemTitle)
+    }
+    
+    func positionControls() {
+        os_log(OSLogType.info, "Here is where we set the constraints to position the controls for the %{public}@ view", EarthQuakeConstants.HomeViewMetaData.itemTitle)
     }
 }
 
