@@ -9,6 +9,7 @@ Things to do
 2. Write the code in Swift (not Objective-C)
 3. Build for a minimum SDK target of 11.0
 4. The Application should be targeted to both iPhone and iPad (universal application). It should also support landscape and portrait orientations.
+
 Things NOT to do
 1. Do not use any third party libraries.
 2. Do not use any copyrighted art or documents. (You will not be judged on your artistic capabilities)
