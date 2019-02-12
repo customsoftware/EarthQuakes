@@ -2,6 +2,8 @@
 Minimum Application Features:
 1. View a list of earthquakes with relevant information for up to the last 30 days. You are to decide what is the “relevant” information.
 2. From an item in the list, I would like to be able to navigate to the USGS page about the specific earthquake.
+3. Use the API documented ​https://earthquake.usgs.gov/fdsnws/event/1/ 
+4. Use the geojson format.
 
 # Requirements
 Things to do
