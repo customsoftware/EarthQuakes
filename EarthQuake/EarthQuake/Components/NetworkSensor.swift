@@ -114,9 +114,7 @@ class NetworkSensor {
     
     private func start() {
         if timer == nil {
-            timer = Timer.scheduledTimer(withTimeInterval: 5, repeats: true, block: { (aTimer) in
-                print("timer running") // Stupid I know, but without this print statement, the timer doesn't work.... go figure.
-                
+            timer = Timer.scheduledTimer(withTimeInterval: EarthQuakeConstants.APIMetaData.networkPollingDelay, repeats: true, block: { (aTimer) in
                 let currentStatus = NetworkSensor.isConnectedToNetwork(wifiOnly: false)
                 let wifiStatus = NetworkSensor.isConnectedToNetwork()
                 let newStatus: NetworkStatus

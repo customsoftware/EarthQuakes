@@ -45,6 +45,16 @@ struct EarthQuakeConstants {
         static let last30DaysURI = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/significant_month.geojson"
         static let last30_4PlusURI = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/4.5_month.geojson"
         static let archivedDataKey = "fetchedDataKey"
+        
+        struct EQCoordinates {
+            static let longitude = 0
+            static let latitude = 1
+            static let depth = 2
+        }
+        
+        static let defaultEmptyString = ""
+        static let defaultEmptyInt = 0
+        static let networkPollingDelay: TimeInterval = 1
     }
     
     struct Fonts {
