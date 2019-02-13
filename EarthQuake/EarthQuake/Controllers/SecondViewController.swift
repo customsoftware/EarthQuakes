@@ -76,16 +76,15 @@ fileprivate extension SecondViewController {
     
     func makeWebView() {
         guard let urlString = controllingEvent?.properties.url,
-            let url = URL(string: urlString),
-            let frame = UIApplication.shared.windows.first?.frame else { return }
+            let url = URL(string: urlString) else { return }
         
         let request = URLRequest(url: url)
         let config = WKWebViewConfiguration()
         config.allowsAirPlayForMediaPlayback = false
-        let web = WKWebView(frame: frame, configuration: config)
+        let web = WKWebView(frame: .zero, configuration: config)
         web.load(request)
         
-        swapIn(web)
+        view = web
         webView = web
     }
     
@@ -109,7 +108,8 @@ fileprivate extension SecondViewController {
     
     func resetView() {
         view.subviews.forEach({ $0.removeFromSuperview() })
-        view.alpha = EarthQuakeConstants.SettingsViewMetaData.backGroundAlpha
+        guard let view = makeBackgroundView() else { return }
+        self.view = view
     }
 }
 
