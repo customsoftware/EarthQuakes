@@ -13,11 +13,20 @@ class HomeSplitViewController: UISplitViewController {
     private let master = FirstViewController()
     private let detail = SecondViewController()
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        viewControllers = [master, detail]
-        
-        
+    override func loadView() {
+        super.loadView()
+        let masterNav = UINavigationController(rootViewController: master)
+        viewControllers = [masterNav, detail]
+        delegate = self
+        preferredDisplayMode = .automatic
+    }
+}
+
+extension HomeSplitViewController: UISplitViewControllerDelegate {
+    func splitViewController(_ splitViewController: UISplitViewController, collapseSecondary secondaryViewController:UIViewController, onto primaryViewController:UIViewController) -> Bool {
+        guard let secondaryAsNavController = secondaryViewController as? UINavigationController,
+            let topAsDetailController = secondaryAsNavController.topViewController as? SecondViewController,
+            topAsDetailController.presentedURLString == nil else { return false }
+        return true
     }
 }

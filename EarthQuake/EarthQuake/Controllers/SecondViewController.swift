@@ -16,15 +16,13 @@ class SecondViewController: UIViewController, ProgramBuildable {
         return retButton
     }
     
+    var presentedURLString: String?
+    
     lazy var apiLabel = makeAPILabel(in: self.view)
     
     override func loadView() {
         super.loadView()
         createControls()
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
         positionControls()
     }
     

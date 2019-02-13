@@ -1,22 +1,22 @@
 
 {
 type: "FeatureCollection",
-metadata: {
-generated: Long Integer,
-url: String,
-title: String,
-api: String,
-count: Integer,
-status: Integer
-},
-bbox: [
-minimum longitude,
-minimum latitude,
-minimum depth,
-maximum longitude,
-maximum latitude,
-maximum depth
-],
+    metadata: {
+    generated: Long Integer,
+    url: String,
+    title: String,
+    api: String,
+    count: Integer,
+    status: Integer
+    },
+    bbox: [
+    minimum longitude,
+    minimum latitude,
+    minimum depth,
+    maximum longitude,
+    maximum latitude,
+    maximum depth
+    ],
 features: [
 {
 type: "Feature",
@@ -60,3 +60,16 @@ id: String
 …
 ]
 }
+
+
+// Sample:
+{"type":"FeatureCollection","metadata":{"generated":1550021608000,"url":"https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/significant_month.geojson","title":"USGS Significant Earthquakes, Past Month","status":200,"api":"1.7.0","count":10},"features":[{"type":"Feature","properties":{"mag":4.39,"place":"13km ESE of Blue Lake, CA","time":1549477381570,"updated":1549994869329,"tz":-480,"url":"https://earthquake.usgs.gov/earthquakes/eventpage/nc73138600","detail":"https://earthquake.usgs.gov/earthquakes/feed/v1.0/detail/nc73138600.geojson","felt":834,"cdi":3.8,"mmi":4.76,"alert":"green","status":"reviewed","tsunami":1,"sig":613,"net":"nc","code":"73138600","ids":",at00pmioec,nc73138600,us2000je9x,","sources":",at,nc,us,","types":",dyfi,focal-mechanism,geoserve,impact-link,losspager,moment-tensor,nearby-cities,origin,phase-data,scitech-link,shakemap,","nst":32,"dmin":0.08586,"rms":0.13,"gap":67,"magType":"mw","type":"earthquake","title":"M 4.4 - 13km ESE of Blue Lake, CA"},"geometry":{"type":"Point","coordinates":[-123.8395,40.8465,25.83]},"id":"nc73138600"},
+{"type":"Feature","properties":{"mag":5.3,"place":"31km SSE of Boca de Yuma, Dominican Republic","time":1549290828810,"updated":1549599366707,"tz":-240,"url":"https://earthquake.usgs.gov/earthquakes/eventpage/pr2019035005","detail":"https://earthquake.usgs.gov/earthquakes/feed/v1.0/detail/pr2019035005.geojson","felt":514,"cdi":4.7,"mmi":null,"alert":null,"status":"reviewed","tsunami":0,"sig":674,"net":"pr","code":"2019035005","ids":",pt19035050,us2000jd4z,pr2019035005,","sources":",pt,us,pr,","types":",dyfi,geoserve,moment-tensor,origin,phase-data,","nst":22,"dmin":0.4149,"rms":0.8,"gap":189,"magType":"ml","type":"earthquake","title":"M 5.3 - 31km SSE of Boca de Yuma, Dominican Republic"},"geometry":{"type":"Point","coordinates":[-68.5523,18.1358,74]},"id":"pr2019035005"},
+{"type":"Feature","properties":{"mag":6.6,"place":"14km ENE of Puerto Madero, Mexico","time":1549037653090,"updated":1549519876344,"tz":-360,"url":"https://earthquake.usgs.gov/earthquakes/eventpage/us2000jbub","detail":"https://earthquake.usgs.gov/earthquakes/feed/v1.0/detail/us2000jbub.geojson","felt":481,"cdi":6,"mmi":6.19,"alert":"yellow","status":"reviewed","tsunami":1,"sig":959,"net":"us","code":"2000jbub","ids":",at00pm993p,pt19032000,us2000jbub,","sources":",at,pt,us,","types":",dyfi,geoserve,ground-failure,impact-link,losspager,moment-tensor,origin,phase-data,shakemap,","nst":null,"dmin":0.63,"rms":1.33,"gap":135,"magType":"mww","type":"earthquake","title":"M 6.6 - 14km ENE of Puerto Madero, Mexico"},"geometry":{"type":"Point","coordinates":[-92.2981,14.7628,67.93]},"id":"us2000jbub"},
+{"type":"Feature","properties":{"mag":5.6,"place":"13km WNW of Santa Maria, Colombia","time":1548505947220,"updated":1549490052093,"tz":-300,"url":"https://earthquake.usgs.gov/earthquakes/eventpage/us2000j967","detail":"https://earthquake.usgs.gov/earthquakes/feed/v1.0/detail/us2000j967.geojson","felt":358,"cdi":5,"mmi":6,"alert":"green","status":"reviewed","tsunami":0,"sig":661,"net":"us","code":"2000j967","ids":",us2000j967,","sources":",us,","types":",dyfi,geoserve,losspager,moment-tensor,origin,phase-data,shakemap,","nst":null,"dmin":2.341,"rms":1.14,"gap":80,"magType":"mww","type":"earthquake","title":"M 5.6 - 13km WNW of Santa Maria, Colombia"},"geometry":{"type":"Point","coordinates":[-75.7693,2.9902,10]},"id":"us2000j967"},
+{"type":"Feature","properties":{"mag":4.5,"place":"13km WSW of Big Lake, Alaska","time":1548222108925,"updated":1549516756238,"tz":-540,"url":"https://earthquake.usgs.gov/earthquakes/eventpage/ak019124l1g9","detail":"https://earthquake.usgs.gov/earthquakes/feed/v1.0/detail/ak019124l1g9.geojson","felt":1117,"cdi":4.1,"mmi":3.56,"alert":"green","status":"reviewed","tsunami":1,"sig":722,"net":"ak","code":"019124l1g9","ids":",at00plrrtp,ak019124l1g9,us2000j7n5,","sources":",at,ak,us,","types":",dyfi,geoserve,impact-link,losspager,moment-tensor,origin,phase-data,shakemap,","nst":null,"dmin":null,"rms":0.64,"gap":null,"magType":"ml","type":"earthquake","title":"M 4.5 - 13km WSW of Big Lake, Alaska"},"geometry":{"type":"Point","coordinates":[-150.2373,61.503,45.5]},"id":"ak019124l1g9"},
+{"type":"Feature","properties":{"mag":6.7,"place":"Prince Edward Islands region","time":1548183703580,"updated":1549752801157,"tz":180,"url":"https://earthquake.usgs.gov/earthquakes/eventpage/us2000j7dn","detail":"https://earthquake.usgs.gov/earthquakes/feed/v1.0/detail/us2000j7dn.geojson","felt":0,"cdi":0,"mmi":2.59,"alert":"green","status":"reviewed","tsunami":0,"sig":691,"net":"us","code":"2000j7dn","ids":",us2000j7dn,","sources":",us,","types":",dyfi,geoserve,losspager,moment-tensor,origin,phase-data,shakemap,","nst":null,"dmin":7.55,"rms":0.7,"gap":17,"magType":"mww","type":"earthquake","title":"M 6.7 - Prince Edward Islands region"},"geometry":{"type":"Point","coordinates":[42.329,-43.1101,13]},"id":"us2000j7dn"},
+{"type":"Feature","properties":{"mag":6.4,"place":"85km SSW of Bogorawatu, Indonesia","time":1548133803670,"updated":1548173560040,"tz":480,"url":"https://earthquake.usgs.gov/earthquakes/eventpage/us2000j73a","detail":"https://earthquake.usgs.gov/earthquakes/feed/v1.0/detail/us2000j73a.geojson","felt":1,"cdi":2,"mmi":4.23,"alert":"green","status":"reviewed","tsunami":1,"sig":630,"net":"us","code":"2000j73a","ids":",us2000j73a,","sources":",us,","types":",dyfi,geoserve,ground-failure,losspager,moment-tensor,origin,phase-data,shakemap,","nst":null,"dmin":3.648,"rms":0.95,"gap":63,"magType":"mww","type":"earthquake","title":"M 6.4 - 85km SSW of Bogorawatu, Indonesia"},"geometry":{"type":"Point","coordinates":[119.0309,-10.4663,27.01]},"id":"us2000j73a"},
+{"type":"Feature","properties":{"mag":6.7,"place":"15km SSW of Coquimbo, Chile","time":1547947971480,"updated":1548634974939,"tz":-240,"url":"https://earthquake.usgs.gov/earthquakes/eventpage/us2000j6hy","detail":"https://earthquake.usgs.gov/earthquakes/feed/v1.0/detail/us2000j6hy.geojson","felt":862,"cdi":7.1,"mmi":7.47,"alert":"yellow","status":"reviewed","tsunami":1,"sig":1303,"net":"us","code":"2000j6hy","ids":",at00pllwap,pt19020000,us2000j6hy,","sources":",at,pt,us,","types":",dyfi,geoserve,ground-failure,impact-link,losspager,moment-tensor,origin,phase-data,shakemap,","nst":null,"dmin":0.549,"rms":1.1,"gap":31,"magType":"mww","type":"earthquake","title":"M 6.7 - 15km SSW of Coquimbo, Chile"},"geometry":{"type":"Point","coordinates":[-71.4234,-30.0738,53.04]},"id":"us2000j6hy"},
+{"type":"Feature","properties":{"mag":4.6,"place":"220km ESE of Ocean City, Maryland","time":1547595048680,"updated":1550019218536,"tz":-300,"url":"https://earthquake.usgs.gov/earthquakes/eventpage/us2000j4bf","detail":"https://earthquake.usgs.gov/earthquakes/feed/v1.0/detail/us2000j4bf.geojson","felt":490,"cdi":8.2,"mmi":3.26,"alert":"green","status":"reviewed","tsunami":0,"sig":727,"net":"us","code":"2000j4bf","ids":",us2000j4bf,","sources":",us,","types":",dyfi,geoserve,losspager,moment-tensor,origin,phase-data,shakemap,","nst":null,"dmin":2.146,"rms":1.2,"gap":74,"magType":"mww","type":"earthquake","title":"M 4.6 - 220km ESE of Ocean City, Maryland"},"geometry":{"type":"Point","coordinates":[-73.0097,37.2318,10]},"id":"us2000j4bf"},
+{"type":"Feature","properties":{"mag":6.6,"place":"94km NW of Sola, Vanuatu","time":1547575594290,"updated":1548960379586,"tz":660,"url":"https://earthquake.usgs.gov/earthquakes/eventpage/us2000j468","detail":"https://earthquake.usgs.gov/earthquakes/feed/v1.0/detail/us2000j468.geojson","felt":null,"cdi":null,"mmi":5.96,"alert":"green","status":"reviewed","tsunami":1,"sig":670,"net":"us","code":"2000j468","ids":",pt19015000,at00pldwz2,us2000j468,","sources":",pt,at,us,","types":",geoserve,ground-failure,impact-link,losspager,moment-tensor,origin,phase-data,shakemap,","nst":null,"dmin":7.819,"rms":0.74,"gap":18,"magType":"mww","type":"earthquake","title":"M 6.6 - 94km NW of Sola, Vanuatu"},"geometry":{"type":"Point","coordinates":[166.8787,-13.3312,35]},"id":"us2000j468"}],"bbox":[-150.2373,-43.1101,10,166.8787,61.503,74]}
