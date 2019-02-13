@@ -31,8 +31,7 @@ class SecondViewController: UIViewController, ProgramBuildable {
     var controllingEvent: EQFeature? {
         didSet {
             guard let _ = controllingEvent  else {
-                view.subviews.forEach({ $0.removeFromSuperview() })
-                view.alpha = EarthQuakeConstants.SettingsViewMetaData.backGroundAlpha
+                resetView()
                 return }
             
             if NetworkSensor.isConnectedToNetwork(wifiOnly: false) {
@@ -103,9 +102,14 @@ fileprivate extension SecondViewController {
     }
     
     func swapIn(_ newView: UIView) {
+        resetView()
         view.alpha = 1
-        view.subviews.forEach({ $0.removeFromSuperview() })
         view.addSubview(newView)
+    }
+    
+    func resetView() {
+        view.subviews.forEach({ $0.removeFromSuperview() })
+        view.alpha = EarthQuakeConstants.SettingsViewMetaData.backGroundAlpha
     }
 }
 

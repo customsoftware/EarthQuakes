@@ -75,15 +75,25 @@ class FirstViewController: UITableViewController, ProgramBuildable {
     }
     
     @objc func refetchData(_ sender: UISegmentedControl) {
+        guard NetworkSensor.isConnectedToNetwork(wifiOnly: false) else {
+            sender.isEnabled = false
+            if sender.selectedSegmentIndex == 0 {
+                sender.selectedSegmentIndex = 1
+            } else {
+                sender.selectedSegmentIndex = 0
+            }
+            return }
         let selectedOption = ReportOptions.allCases[sender.selectedSegmentIndex].rawValue
         fetchResults(with: selectedOption)
         var titleString = EarthQuakeConstants.HomeViewMetaData.viewTitle
         if sender.selectedSegmentIndex == 1 {
             titleString = EarthQuakeConstants.HomeViewMetaData.altViewTitle
         }
-        navigationItem.title = titleString
-        guard let detail = splitViewController?.viewControllers.last as? SecondViewController else { return }
-        detail.controllingEvent = nil
+        if titleString != navigationItem.title {
+            navigationItem.title = titleString
+            guard let detail = splitViewController?.viewControllers.last as? SecondViewController else { return }
+            detail.controllingEvent = nil
+        }
     }
     
     private func processEvents(_ events: [EQFeature]?) {
