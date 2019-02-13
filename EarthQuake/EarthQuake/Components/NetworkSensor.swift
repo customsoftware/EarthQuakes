@@ -27,35 +27,42 @@ class NetworkSensor {
     private var currentNetworkStatus = NetworkStatus.unavailable
     private var timer: Timer?
     
+    init() {
+        delegates.append(self)
+        if !NetworkSensor.isConnectedToNetwork(wifiOnly: false) {
+            start()
+        }
+    }
+    
     func start() {
-        timer = Timer(timeInterval: 15, repeats: true, block: { (timer) in
-            if #available(iOS 12.0, *) {
-                os_log(OSLogType.info, "timer fired")
-            } else {
-                // Fallback on earlier versions
-            }
-            let currentStatus = NetworkSensor.isConnectedToNetwork(wifiOnly: false)
-            let wifiStatus = NetworkSensor.isConnectedToNetwork()
-            
-            let newStatus: NetworkStatus
-            if !currentStatus,
-                wifiStatus {
-                newStatus = .wifi
-            } else if currentStatus {
-                newStatus = .available
-            } else {
-                newStatus = .unavailable
-            }
-            
-            if newStatus != self.currentNetworkStatus {
-                self.delegates.forEach({ $0.networkStatusChangedTo(newStatus) })
-            }
-            self.currentNetworkStatus = newStatus
-        })
+        if timer == nil {
+            timer = Timer.scheduledTimer(withTimeInterval: 5, repeats: true, block: { (aTimer) in
+                print("timer running")
+                let currentStatus = NetworkSensor.isConnectedToNetwork(wifiOnly: false)
+                let wifiStatus = NetworkSensor.isConnectedToNetwork()
+                
+                let newStatus: NetworkStatus
+                if !currentStatus,
+                    wifiStatus {
+                    newStatus = .wifi
+                } else if currentStatus {
+                    newStatus = .available
+                } else {
+                    newStatus = .unavailable
+                }
+                
+                if newStatus != self.currentNetworkStatus {
+                    self.delegates.forEach({ $0.networkStatusChangedTo(newStatus) })
+                }
+                self.currentNetworkStatus = newStatus
+            })
+        }
     }
     
     func stop() {
-        timer?.invalidate()
+        guard let timer = timer else { return }
+        timer.invalidate()
+        self.timer = nil
     }
     
     func addObserver(observer: NetworkAvailabilityWatcher) {
@@ -107,5 +114,13 @@ class NetworkSensor {
         }
         
         return retValue
+    }
+}
+
+extension NetworkSensor: NetworkAvailabilityWatcher {
+    func networkStatusChangedTo(_ status: NetworkStatus) {
+        if status != .unavailable {
+            stop()
+        }
     }
 }

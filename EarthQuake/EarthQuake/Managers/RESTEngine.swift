@@ -67,6 +67,9 @@ struct RESTEngine {
             let newFeature = EQFeature(with: $0)
             eqEvents.append(newFeature)
         })
+        
+        UserDefaults.standard.set(dataString, forKey: EarthQuakeConstants.APIMetaData.archivedDataKey)
+        UserDefaults.standard.synchronize()
         return eqEvents
     }
     
@@ -74,16 +77,12 @@ struct RESTEngine {
         var events: [EQFeature]?
         var fetchError: Error?
         
-        defer { handler(events, fetchError) }
-        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
-            fetchError = RESTErrors.unknown
-            return
-        }
-        appDelegate.sensor.start()
         if let dataString = UserDefaults.standard.string(forKey: EarthQuakeConstants.APIMetaData.archivedDataKey) {
             events = parse(dataString, fetchError: &fetchError)
         } else {
             fetchError = RESTErrors.noDataAvailable
         }
+        
+        handler(events, fetchError)
     }
 }

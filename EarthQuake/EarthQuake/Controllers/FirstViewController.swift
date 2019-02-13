@@ -13,7 +13,8 @@ class FirstViewController: UITableViewController, ProgramBuildable {
     let summaryCellID = "summaryCellID"
     
     private var eventList = [EQFeature]()
-
+    private var segmentControl: UISegmentedControl!
+    
     var tabItem: UITabBarItem {
         let buttonImage = EarthQuakeConstants.Images.home
         let retButton = UITabBarItem(title: EarthQuakeConstants.HomeViewMetaData.itemTitle, image: buttonImage, tag: 0)
@@ -27,11 +28,13 @@ class FirstViewController: UITableViewController, ProgramBuildable {
         tableView.register(SummaryTableViewCell.self, forCellReuseIdentifier: summaryCellID)
         fetchResults(with: EarthQuakeConstants.APIMetaData.last30DaysURI)
         navigationItem.title = EarthQuakeConstants.HomeViewMetaData.viewTitle
+        NetworkSensor.shared.addObserver(observer: self)
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.isToolbarHidden = false
+        segmentControl.isEnabled = NetworkSensor.isConnectedToNetwork(wifiOnly: false)
     }
     func createControls() {
         setUpToolbar()
@@ -53,6 +56,9 @@ class FirstViewController: UITableViewController, ProgramBuildable {
                 errorString = EarthQuakeConstants.HomeViewMetaData.ErrorString.coding
             case RESTErrors.noDataAvailable:
                 errorString = EarthQuakeConstants.HomeViewMetaData.ErrorString.noData
+                NetworkSensor.shared.start()
+                segmentControl.isEnabled = false
+                
             case RESTErrors.unknown:
                 errorString = String(format: EarthQuakeConstants.HomeViewMetaData.ErrorString.unKnown, error.localizedDescription)
             case is DecodingError:
@@ -99,6 +105,7 @@ class FirstViewController: UITableViewController, ProgramBuildable {
         let searchOptions = UISegmentedControl(items: items)
         searchOptions.addTarget(self, action: #selector(refetchData(_:)), for: .valueChanged)
         searchOptions.selectedSegmentIndex = 0
+        segmentControl = searchOptions
         let button = UIBarButtonItem(customView: searchOptions)
         let spacer = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: self, action: nil)
         var toolBarItems = [UIBarButtonItem]()
@@ -140,6 +147,15 @@ extension FirstViewController {
         
         detailView.controllingEvent = eventCell.controllingEvent
         showDetailViewController(detailView, sender: nil)
+    }
+}
+
+extension FirstViewController: NetworkAvailabilityWatcher {
+    func networkStatusChangedTo(_ status: NetworkStatus) {
+        if status != .unavailable {
+            refetchData(segmentControl)
+        }
+        segmentControl.isEnabled = NetworkSensor.isConnectedToNetwork(wifiOnly: false)
     }
 }
 

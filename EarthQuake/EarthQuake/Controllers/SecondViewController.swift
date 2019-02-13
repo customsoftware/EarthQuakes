@@ -20,13 +20,12 @@ class SecondViewController: UIViewController, ProgramBuildable {
     var webView: WKWebView?
     var controllingEvent: EQFeature? {
         didSet {
-            guard let event = controllingEvent else { return }
+            guard let _ = controllingEvent  else { return }
             if NetworkSensor.isConnectedToNetwork(wifiOnly: false) {
-                // Add the webview and go to the URL
                 makeWebView()
             } else {
-                // Load what we have archived in the event itself
-                print("Loading local: \(event.properties.place)")
+                // Build the local page here...
+                NetworkSensor.shared.start()
             }
         }
     }
@@ -35,6 +34,7 @@ class SecondViewController: UIViewController, ProgramBuildable {
         super.loadView()
         createControls()
         positionControls()
+        NetworkSensor.shared.addObserver(observer: self)
     }
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
@@ -90,6 +90,15 @@ fileprivate extension SecondViewController {
     
     func makeLocalView() {
         
+    }
+}
+
+extension SecondViewController: NetworkAvailabilityWatcher {
+    func networkStatusChangedTo(_ status: NetworkStatus) {
+        if status != .unavailable {
+            makeWebView()
+            NetworkSensor.shared.stop()
+        }
     }
 }
 
