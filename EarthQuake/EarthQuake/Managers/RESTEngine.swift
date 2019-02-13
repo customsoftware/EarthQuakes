@@ -6,41 +6,84 @@
 //  Copyright © 2019 Kenneth Cluff. All rights reserved.
 //
 
-import Foundation
+import UIKit
 import os
 
 typealias ResultHandler = ([EQFeature]?, Error?) -> Void
 
 struct RESTEngine {
-    static func fetchSignificantData(with handler: ResultHandler) {
-        guard let requestURL = URL(string: EarthQuakeConstants.APIMetaData.last30DaysURI) else {
-            handler(nil, RESTErrors.badURLString)
+    
+    /**
+     This fetches the earthQuake data from the USGS servers. This is an asynchronous call using a closure to return data to the calling object.
+     
+     - Author:
+     Ken Cluff
+     
+     
+     - parameters:
+     - uri: This is a string which is the URI the function will use to retrieve data
+     - handler: This is a typealias for 'ResultHandler' that returns either an array of EQFeatures or an Error
+     - Version:
+     1.0
+     */
+    static func fetchSignificantData(uri: String, with handler: ResultHandler) {
+        guard NetworkSensor.isConnectedToNetwork(wifiOnly: false) else {
+            loadFromUserDefaults(handler)
+            return
+        }
+        
+        var events: [EQFeature]?
+        var fetchError: Error?
+        
+        defer { handler(events, fetchError)}
+        guard let requestURL = URL(string: uri) else {
+            fetchError = RESTErrors.badURLString
             return
         }
         
         let resultString: String
-//        let jsonDecoder = JSONDecoder()
         
         do {
             try resultString = String(contentsOf: requestURL)
-            guard let resultData = resultString.data(using: .utf8) else {
-                handler(nil, RESTErrors.dataEncoding)
-                return
-            }
-            var events = [EQFeature]()
-            guard let jsonObject = try JSONSerialization.jsonObject(with: resultData, options: .allowFragments) as? [String: Any],
-                let features = jsonObject["features"] as? [[String: Any]] else { return }
-            features.forEach({
-                let newFeature = EQFeature(with: $0)
-                events.append(newFeature)
-            })
+            events = parse(resultString, fetchError: &fetchError)
             
-//            let earthQuakeData = try jsonDecoder.decode(EQData.self, from: resultData)
-            handler(events, nil)
         } catch let error {
-            let codeError = error as! DecodingError
-            os_log(OSLogType.error, "%{public}@",codeError.localizedDescription)
-            handler(nil, codeError)
+            fetchError = error as! DecodingError
+        }
+    }
+    
+    private static func parse(_ dataString: String, fetchError:  inout Error?) -> [EQFeature]? {
+        guard let resultData = dataString.data(using: .utf8) else {
+            fetchError = RESTErrors.dataEncoding
+            return nil
+        }
+        guard let jsonObject = try? JSONSerialization.jsonObject(with: resultData, options: .allowFragments) as? [String: Any],
+            let features = jsonObject?["features"] as? [[String: Any]] else {
+                fetchError = RESTErrors.dataDecoding
+                return nil
+        }
+        var eqEvents = [EQFeature]()
+        features.forEach({
+            let newFeature = EQFeature(with: $0)
+            eqEvents.append(newFeature)
+        })
+        return eqEvents
+    }
+    
+    private static func loadFromUserDefaults(_ handler: ResultHandler) {
+        var events: [EQFeature]?
+        var fetchError: Error?
+        
+        defer { handler(events, fetchError) }
+        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
+            fetchError = RESTErrors.unknown
+            return
+        }
+        appDelegate.sensor.start()
+        if let dataString = UserDefaults.standard.string(forKey: EarthQuakeConstants.APIMetaData.archivedDataKey) {
+            events = parse(dataString, fetchError: &fetchError)
+        } else {
+            fetchError = RESTErrors.noDataAvailable
         }
     }
 }

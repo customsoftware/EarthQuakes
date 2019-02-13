@@ -7,18 +7,29 @@
 //
 
 import UIKit
+import WebKit
 import os
 
 class SecondViewController: UIViewController, ProgramBuildable {
     var tabItem: UITabBarItem {
-        let buttonImage = UIImage(named: EarthQuakeConstants.ImageNames.settings)
+        let buttonImage = EarthQuakeConstants.Images.settings
         let retButton = UITabBarItem(title: EarthQuakeConstants.SettingsViewMetaData.itemTitle, image: buttonImage, tag: 1)
         return retButton
     }
     
-    var presentedURLString: String?
-    
-    lazy var apiLabel = makeAPILabel(in: self.view)
+    var webView: WKWebView?
+    var controllingEvent: EQFeature? {
+        didSet {
+            guard let event = controllingEvent else { return }
+            if NetworkSensor.isConnectedToNetwork(wifiOnly: false) {
+                // Add the webview and go to the URL
+                makeWebView()
+            } else {
+                // Load what we have archived in the event itself
+                print("Loading local: \(event.properties.place)")
+            }
+        }
+    }
     
     override func loadView() {
         super.loadView()
@@ -26,15 +37,29 @@ class SecondViewController: UIViewController, ProgramBuildable {
         positionControls()
     }
     
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        guard let webView = webView else { return }
+        webView.frame.size = size
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        guard let web = webView else { return }
+        web.stopLoading()
+        createControls()
+        webView = nil
+    }
+    
     func createControls() {
         guard let view = makeBackgroundView() else { return }
         self.view = view
-        _ = apiLabel
     }
     
     func positionControls() {
-        positionAPILabel()
-        os_log(OSLogType.info, "Here is where we set the constraints to position the controls for the %{public}@ view", EarthQuakeConstants.SettingsViewMetaData.itemTitle)
+        if #available(iOS 12.0, *) {
+            os_log(OSLogType.info, "Here is where we set the constraints to position the controls for the %{public}@ view", EarthQuakeConstants.SettingsViewMetaData.itemTitle)
+        } else {
+            // Fallback on earlier versions
+        }
     }
 }
 
@@ -42,27 +67,37 @@ class SecondViewController: UIViewController, ProgramBuildable {
 fileprivate extension SecondViewController {
     func makeBackgroundView() -> UIView? {
         guard let windowFrame = UIApplication.shared.windows.first?.frame else { return nil }
-        let view = UIView(frame: windowFrame)
-        view.backgroundColor = UIColor.lightGray
+        let view = UIImageView(frame: windowFrame)
+        view.image = EarthQuakeConstants.Images.backGroundImage
+        view.alpha = EarthQuakeConstants.SettingsViewMetaData.backGroundAlpha
+        view.backgroundColor = .white
+        view.contentMode = .scaleAspectFill
         return view
     }
     
-    func makeAPILabel(in view: UIView) -> UILabel {
-        let retValue = UILabel.forAutoLayout()
-        retValue.textAlignment = .left
-        retValue.lineBreakMode = .byWordWrapping
-        retValue.numberOfLines = 0
-        retValue.text = EarthQuakeConstants.APIMetaData.restRoot
-        retValue.textColor = .black
-        view.addSubview(retValue)
-        return retValue
+    func makeWebView() {
+        guard let urlString = controllingEvent?.properties.url,
+            let url = URL(string: urlString) else { return }
+        
+        let request = URLRequest(url: url)
+        let config = WKWebViewConfiguration()
+        config.allowsAirPlayForMediaPlayback = false
+        let web = WKWebView(frame: .zero, configuration: config)
+        web.load(request)
+        web.uiDelegate = self
+        view = web
     }
+    
+    func makeLocalView() {
+        
+    }
+}
+
+extension SecondViewController: WKUIDelegate {
+    
 }
 
 // MARK: - Position controls
 fileprivate extension SecondViewController {
-    func positionAPILabel() {
-        apiLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20).isActive = true
-        apiLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20).isActive = true
-    }
+    
 }

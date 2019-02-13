@@ -11,8 +11,11 @@ import os
 
 class FirstViewController: UITableViewController, ProgramBuildable {
     let summaryCellID = "summaryCellID"
+    
+    private var eventList = [EQFeature]()
+
     var tabItem: UITabBarItem {
-        let buttonImage = UIImage(named: EarthQuakeConstants.ImageNames.home)
+        let buttonImage = EarthQuakeConstants.Images.home
         let retButton = UITabBarItem(title: EarthQuakeConstants.HomeViewMetaData.itemTitle, image: buttonImage, tag: 0)
         return retButton
     }
@@ -22,32 +25,56 @@ class FirstViewController: UITableViewController, ProgramBuildable {
         createControls()
         positionControls()
         tableView.register(SummaryTableViewCell.self, forCellReuseIdentifier: summaryCellID)
+        fetchResults(with: EarthQuakeConstants.APIMetaData.last30DaysURI)
+        navigationItem.title = EarthQuakeConstants.HomeViewMetaData.viewTitle
     }
-    
-    private var eventList = [EQFeature]()
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        let searchButton = UIBarButtonItem(barButtonSystemItem: .search, target: self, action: #selector(fetchResults(_:)))
-        navigationItem.rightBarButtonItem = searchButton
+        self.navigationController?.isToolbarHidden = false
     }
-    
     func createControls() {
-        os_log(OSLogType.info, "Here is where we build the controls for the %{public}@ view", EarthQuakeConstants.HomeViewMetaData.itemTitle)
+        setUpToolbar()
     }
     
-    func positionControls() {
-        os_log(OSLogType.info, "Here is where we set the constraints to position the controls for the %{public}@ view", EarthQuakeConstants.HomeViewMetaData.itemTitle)
-    }
+    func positionControls() { }
     
-    @objc func fetchResults(_ sender: UIBarButtonItem) {
-        RESTEngine.fetchSignificantData { (events, error) in
+    func fetchResults(with uirString: String) {
+        RESTEngine.fetchSignificantData(uri: uirString) { (events, error) in
             guard let error = error else {
                 processEvents(events)
                 return
             }
-            os_log(OSLogType.error, "%{public}@", error.localizedDescription)
+            var errorString = ""
+            switch error {
+            case RESTErrors.badURLString:
+                errorString = EarthQuakeConstants.HomeViewMetaData.ErrorString.badURL
+            case RESTErrors.dataDecoding, RESTErrors.dataEncoding:
+                errorString = EarthQuakeConstants.HomeViewMetaData.ErrorString.coding
+            case RESTErrors.noDataAvailable:
+                errorString = EarthQuakeConstants.HomeViewMetaData.ErrorString.noData
+            case RESTErrors.unknown:
+                errorString = String(format: EarthQuakeConstants.HomeViewMetaData.ErrorString.unKnown, error.localizedDescription)
+            case is DecodingError:
+                errorString = EarthQuakeConstants.HomeViewMetaData.ErrorString.decodeError
+            default:
+                errorString = String(format: EarthQuakeConstants.HomeViewMetaData.ErrorString.unKnown, error.localizedDescription)
+            }
+            
+            throwUserAlert(with: errorString)
         }
+    }
+    
+    @objc func refetchData(_ sender: UISegmentedControl) {
+        let selectedOption = ReportOptions.allCases[sender.selectedSegmentIndex].rawValue
+        fetchResults(with: selectedOption)
+        var titleString = EarthQuakeConstants.HomeViewMetaData.viewTitle
+        if sender.selectedSegmentIndex == 1 {
+            titleString = EarthQuakeConstants.HomeViewMetaData.altViewTitle
+        }
+        navigationItem.title = titleString
+        guard let detail = splitViewController?.viewControllers.last as? SecondViewController else { return }
+        detail.createControls()
     }
     
     private func processEvents(_ events: [EQFeature]?) {
@@ -56,6 +83,38 @@ class FirstViewController: UITableViewController, ProgramBuildable {
         DispatchQueue.main.async {
             self.tableView.reloadData()
         }
+    }
+    
+    private func throwUserAlert(with alertString: String) {
+        let alert = UIAlertController(title: EarthQuakeConstants.HomeViewMetaData.alertTitle, message: alertString, preferredStyle: .alert)
+        let okAction = UIAlertAction(title: EarthQuakeConstants.HomeViewMetaData.okTitle, style: .default, handler: nil)
+        alert.addAction(okAction)
+        DispatchQueue.main.async {
+            self.present(alert, animated: true, completion: nil)
+        }
+    }
+    
+    private func setUpToolbar(){
+        let items = ["Last 30", "Major"]
+        let searchOptions = UISegmentedControl(items: items)
+        searchOptions.addTarget(self, action: #selector(refetchData(_:)), for: .valueChanged)
+        searchOptions.selectedSegmentIndex = 0
+        let button = UIBarButtonItem(customView: searchOptions)
+        let spacer = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: self, action: nil)
+        var toolBarItems = [UIBarButtonItem]()
+        toolBarItems.append(spacer)
+        toolBarItems.append(button)
+        toolBarItems.append(spacer)
+        
+        self.setToolbarItems(toolBarItems, animated: true)
+        self.navigationController?.toolbar.tintColor = .black
+    }
+    
+    private func showDetailView(with event: EQFeature) {
+        let detail = SecondViewController()
+        detail.controllingEvent = event
+        navigationController?.pushViewController(detail, animated: true)
+        navigationController?.isToolbarHidden = true
     }
 }
 
@@ -69,6 +128,18 @@ extension FirstViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: summaryCellID, for: indexPath) as! SummaryTableViewCell
         cell.controllingEvent = event
         return cell
+    }
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        guard let eventCell = tableView.cellForRow(at: indexPath) as? SummaryTableViewCell,
+            let event = eventCell.controllingEvent else { return }
+        
+        guard let detailView = splitViewController?.viewControllers.last as? SecondViewController  else {
+            showDetailView(with: event)
+            return }
+        
+        detailView.controllingEvent = eventCell.controllingEvent
+        showDetailViewController(detailView, sender: nil)
     }
 }
 

@@ -25,8 +25,7 @@ class HomeSplitViewController: UISplitViewController {
 extension HomeSplitViewController: UISplitViewControllerDelegate {
     func splitViewController(_ splitViewController: UISplitViewController, collapseSecondary secondaryViewController:UIViewController, onto primaryViewController:UIViewController) -> Bool {
         guard let secondaryAsNavController = secondaryViewController as? UINavigationController,
-            let topAsDetailController = secondaryAsNavController.topViewController as? SecondViewController,
-            topAsDetailController.presentedURLString == nil else { return false }
-        return true
+            let _ = secondaryAsNavController.topViewController as? SecondViewController else { return true }
+        return false
     }
 }

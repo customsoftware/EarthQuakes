@@ -25,10 +25,15 @@ class NetworkSensor {
     
     private var delegates = [NetworkAvailabilityWatcher]()
     private var currentNetworkStatus = NetworkStatus.unavailable
+    private var timer: Timer?
     
-    init() {
-        Timer.scheduledTimer(withTimeInterval: 15, repeats: true) { (timer) in
-            os_log(OSLogType.info, "timer fired")
+    func start() {
+        timer = Timer(timeInterval: 15, repeats: true, block: { (timer) in
+            if #available(iOS 12.0, *) {
+                os_log(OSLogType.info, "timer fired")
+            } else {
+                // Fallback on earlier versions
+            }
             let currentStatus = NetworkSensor.isConnectedToNetwork(wifiOnly: false)
             let wifiStatus = NetworkSensor.isConnectedToNetwork()
             
@@ -46,7 +51,11 @@ class NetworkSensor {
                 self.delegates.forEach({ $0.networkStatusChangedTo(newStatus) })
             }
             self.currentNetworkStatus = newStatus
-        }
+        })
+    }
+    
+    func stop() {
+        timer?.invalidate()
     }
     
     func addObserver(observer: NetworkAvailabilityWatcher) {

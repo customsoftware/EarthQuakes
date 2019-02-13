@@ -12,6 +12,13 @@ enum RESTErrors: Error {
     case unknown
     case dataEncoding
     case badURLString
+    case dataDecoding
+    case noDataAvailable
+}
+
+enum ReportOptions: String, CaseIterable {
+    case significant = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/significant_month.geojson"
+    case major = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/4.5_month.geojson"
 }
 
 struct EQData: Codable {
