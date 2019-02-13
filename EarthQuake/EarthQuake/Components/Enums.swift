@@ -27,6 +27,11 @@ enum NetworkStatus {
     case available
 }
 
+enum ReportOptionIndex: Int {
+    case significant
+    case major
+}
+
 enum DetailViewFields: CaseIterable {
     case name
     case magnitude

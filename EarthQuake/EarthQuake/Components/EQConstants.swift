@@ -16,11 +16,13 @@ struct EarthQuakeConstants {
     }
     
     struct HomeViewMetaData {
+        static let emptyString = ""
         static let itemTitle = "Home"
         static let viewTitle = "Significant Earthquake Events"
         static let altViewTitle = "4.5+ Earthquakes"
         static let alertTitle = "Data Fetch Alert"
         static let okTitle = "OK"
+        static let segmentOptions = ["OK", "Major"]
         
         struct ErrorString {
             static let badURL = "A URL could not be built based upon the string passed in to the function. Please advise the developer for assistance."
@@ -34,6 +36,7 @@ struct EarthQuakeConstants {
     struct SettingsViewMetaData {
         static let itemTitle = "Settings"
         static let backGroundAlpha: CGFloat = 0.4
+        static let opaqueAlpha: CGFloat = 1.0
         static let notGiven = "Not given"
     }
     

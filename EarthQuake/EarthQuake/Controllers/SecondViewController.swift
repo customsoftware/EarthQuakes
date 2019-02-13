@@ -11,7 +11,7 @@ import WebKit
 import os
 
 class SecondViewController: UIViewController, ProgramBuildable {
-    lazy var formatter: DateFormatter = {
+    lazy private var formatter: DateFormatter = {
         let aFormatter = DateFormatter()
         aFormatter.timeStyle = .medium
         aFormatter.dateStyle = .medium
@@ -24,8 +24,9 @@ class SecondViewController: UIViewController, ProgramBuildable {
         return retButton
     }
     
-    var webView: WKWebView?
-    var tableView: UITableView?
+    private var webView: WKWebView?
+    private var tableView: UITableView?
+    
     var controllingEvent: EQFeature? {
         didSet {
             guard let _ = controllingEvent else {
@@ -61,7 +62,7 @@ class SecondViewController: UIViewController, ProgramBuildable {
     }
 }
 
-// MARK: - Create controls
+// MARK: - Control related
 fileprivate extension SecondViewController {
     func makeBackgroundView() -> UIView? {
         guard let windowFrame = UIApplication.shared.windows.first?.frame else { return nil }
@@ -100,7 +101,7 @@ fileprivate extension SecondViewController {
     
     func swapIn(_ newView: UIView) {
         resetView()
-        view.alpha = 1
+        view.alpha = EarthQuakeConstants.SettingsViewMetaData.opaqueAlpha
         view.addSubview(newView)
     }
     
