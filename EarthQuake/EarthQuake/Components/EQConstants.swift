@@ -24,5 +24,6 @@ struct EarthQuakeConstants {
     
     struct APIMetaData {
         static let restRoot = "https://earthquake.usgs.gov/fdsnws/event/1/"
+        static let last30DaysURI = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/significant_month.geojson"
     }
 }
