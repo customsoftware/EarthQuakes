@@ -12,3 +12,7 @@ protocol ProgramBuildable {
     var tabItem: UITabBarItem { get }
     func createControls()
 }
+
+protocol NetworkAvailabilityWatcher {
+    func networkStatusChangedTo(_ status: NetworkStatus)
+}

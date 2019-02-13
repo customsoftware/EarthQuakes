@@ -8,17 +8,6 @@
 
 import UIKit
 import SystemConfiguration
-import os
-
-protocol NetworkAvailabilityWatcher {
-    func networkStatusChangedTo(_ status: NetworkStatus)
-}
-
-enum NetworkStatus {
-    case unavailable
-    case wifi
-    case available
-}
 
 class NetworkSensor {
     static var shared = NetworkSensor()
@@ -42,38 +31,34 @@ class NetworkSensor {
         delegates.append(self)
     }
     
+    /**
+     This is starts the network sensor. It is meant to be called only once, immediately after the app starts.
+     
+     - Author:
+     Ken Cluff
+     
+     - returns:
+     Doesn't return a value
+     
+     - Version:
+     1.0
+     */
     func remoteStart() {
         _ = NetworkSensor.isConnectedToNetwork(wifiOnly: false)
     }
     
-    func start() {
-        if timer == nil {
-            timer = Timer.scheduledTimer(withTimeInterval: 5, repeats: true, block: { (aTimer) in
-                print("timer running")
-                let currentStatus = NetworkSensor.isConnectedToNetwork(wifiOnly: false)
-                let wifiStatus = NetworkSensor.isConnectedToNetwork()
-                
-                let newStatus: NetworkStatus
-                if !currentStatus,
-                    wifiStatus {
-                    newStatus = .wifi
-                } else if currentStatus {
-                    newStatus = .available
-                } else {
-                    newStatus = .unavailable
-                }
-                
-                self.currentNetworkStatus = newStatus
-            })
-        }
-    }
-    
-    func stop() {
-        guard let timer = timer else { return }
-        timer.invalidate()
-        self.timer = nil
-    }
-    
+    /**
+     Adds a delegate to the network sniffer.
+     
+     - Author:
+     Ken Cluff
+     
+     - returns:
+     Doesn't return a value
+     
+     - Version:
+     1.0
+     */
     func addObserver(observer: NetworkAvailabilityWatcher) {
         delegates.append(observer)
     }
@@ -125,6 +110,35 @@ class NetworkSensor {
             NetworkSensor.shared.start()
         }
         return retValue
+    }
+    
+    private func start() {
+        if timer == nil {
+            timer = Timer.scheduledTimer(withTimeInterval: 5, repeats: true, block: { (aTimer) in
+                print("timer running") // Stupid I know, but without this print statement, the timer doesn't work.... go figure.
+                
+                let currentStatus = NetworkSensor.isConnectedToNetwork(wifiOnly: false)
+                let wifiStatus = NetworkSensor.isConnectedToNetwork()
+                let newStatus: NetworkStatus
+                
+                if !currentStatus,
+                    wifiStatus {
+                    newStatus = .wifi
+                } else if currentStatus {
+                    newStatus = .available
+                } else {
+                    newStatus = .unavailable
+                }
+                
+                self.currentNetworkStatus = newStatus
+            })
+        }
+    }
+    
+    private func stop() {
+        guard let timer = timer else { return }
+        timer.invalidate()
+        self.timer = nil
     }
 }
 

@@ -78,7 +78,7 @@ struct EQProperties: Codable {
         place = dictionary["place"] as? String ?? ""
         time = dictionary["time"] as? Double ?? Double.nan
         updated = dictionary["updated"] as? Double ?? Double.nan
-        tz = dictionary["tz"] as! Int
+        tz = dictionary["tz"] as? Int ?? 0
         url = dictionary["url"] as? String ?? ""
         detail = dictionary["detail"] as? String ?? ""
         felt = dictionary["felt"] as? Int ?? 0
@@ -87,7 +87,7 @@ struct EQProperties: Codable {
         alert = dictionary["alert"] as? String ?? ""
         status = dictionary["status"] as? String ?? ""
         tsunami = dictionary["tsunami"] as! Int
-        sig = dictionary["sig"] as! Int
+        sig = dictionary["sig"] as? Int ?? 0
         net = dictionary["net"] as? String ?? ""
         code = dictionary["code"] as? String ?? ""
         ids = dictionary["ids"] as? String ?? ""

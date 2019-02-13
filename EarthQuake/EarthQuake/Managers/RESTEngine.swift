@@ -19,7 +19,6 @@ struct RESTEngine {
      - Author:
      Ken Cluff
      
-     
      - parameters:
      - uri: This is a string which is the URI the function will use to retrieve data
      - handler: This is a typealias for 'ResultHandler' that returns either an array of EQFeatures or an Error

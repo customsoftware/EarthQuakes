@@ -21,6 +21,12 @@ enum ReportOptions: String, CaseIterable {
     case major = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/4.5_month.geojson"
 }
 
+enum NetworkStatus {
+    case unavailable
+    case wifi
+    case available
+}
+
 enum DetailViewFields: CaseIterable {
     case name
     case magnitude
