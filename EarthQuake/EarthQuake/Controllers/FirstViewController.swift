@@ -21,10 +21,16 @@ class FirstViewController: UITableViewController, ProgramBuildable {
         return retButton
     }
     
+    lazy var formatter: DateFormatter = {
+       let aFormatter = DateFormatter()
+        aFormatter.timeStyle = .medium
+        aFormatter.dateStyle = .medium
+        return aFormatter
+    }()
+    
     override func loadView() {
         super.loadView()
         createControls()
-        positionControls()
         tableView.register(SummaryTableViewCell.self, forCellReuseIdentifier: summaryCellID)
         fetchResults(with: EarthQuakeConstants.APIMetaData.last30DaysURI)
         navigationItem.title = EarthQuakeConstants.HomeViewMetaData.viewTitle
@@ -39,8 +45,6 @@ class FirstViewController: UITableViewController, ProgramBuildable {
     func createControls() {
         setUpToolbar()
     }
-    
-    func positionControls() { }
     
     func fetchResults(with uirString: String) {
         RESTEngine.fetchSignificantData(uri: uirString) { (events, error) in
@@ -79,7 +83,7 @@ class FirstViewController: UITableViewController, ProgramBuildable {
         }
         navigationItem.title = titleString
         guard let detail = splitViewController?.viewControllers.last as? SecondViewController else { return }
-        detail.createControls()
+        detail.controllingEvent = nil
     }
     
     private func processEvents(_ events: [EQFeature]?) {
@@ -130,21 +134,29 @@ extension FirstViewController {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let event = eventList[indexPath.row]
         let cell = tableView.dequeueReusableCell(withIdentifier: summaryCellID, for: indexPath) as! SummaryTableViewCell
-        cell.controllingEvent = event
         return cell
     }
     
+    override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        guard let summaryCell = cell as? SummaryTableViewCell else { return }
+        let event = eventList[indexPath.row]
+        
+        summaryCell.textLabel?.text = event.properties.place
+        summaryCell.textLabel?.font = EarthQuakeConstants.Fonts.valueFont
+        
+        summaryCell.detailTextLabel?.text = formatter.string(from: event.properties.eventTime)
+        summaryCell.detailTextLabel?.font = EarthQuakeConstants.Fonts.boldCaption
+    }
+    
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard let eventCell = tableView.cellForRow(at: indexPath) as? SummaryTableViewCell,
-            let event = eventCell.controllingEvent else { return }
+        let event = eventList[indexPath.row]
         
         guard let detailView = splitViewController?.viewControllers.last as? SecondViewController  else {
             showDetailView(with: event)
             return }
         
-        detailView.controllingEvent = eventCell.controllingEvent
+        detailView.controllingEvent = event
         showDetailViewController(detailView, sender: nil)
     }
 }
@@ -165,14 +177,5 @@ class SummaryTableViewCell: UITableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: .subtitle, reuseIdentifier: reuseIdentifier)
-    }
-    
-    var controllingEvent: EQFeature? {
-        didSet {
-            guard var event = controllingEvent?.properties else { return }
-            textLabel?.text = event.place
-            let formatter = event.formatter
-            detailTextLabel?.text = formatter.string(from: event.eventTime)
-        }
     }
 }

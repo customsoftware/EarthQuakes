@@ -11,5 +11,4 @@ import UIKit
 protocol ProgramBuildable {
     var tabItem: UITabBarItem { get }
     func createControls()
-    func positionControls()
 }

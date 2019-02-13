@@ -34,6 +34,7 @@ struct EarthQuakeConstants {
     struct SettingsViewMetaData {
         static let itemTitle = "Settings"
         static let backGroundAlpha: CGFloat = 0.4
+        static let notGiven = "Not given"
     }
     
     struct APIMetaData {
@@ -41,5 +42,10 @@ struct EarthQuakeConstants {
         static let last30DaysURI = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/significant_month.geojson"
         static let last30_4PlusURI = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/4.5_month.geojson"
         static let archivedDataKey = "fetchedDataKey"
+    }
+    
+    struct Fonts {
+        static let boldCaption = UIFont.boldSystemFont(ofSize: 16)
+        static let valueFont = UIFont.systemFont(ofSize: 18)
     }
 }

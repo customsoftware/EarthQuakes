@@ -11,6 +11,15 @@ import WebKit
 import os
 
 class SecondViewController: UIViewController, ProgramBuildable {
+    let detailCellID = "detailCellID"
+    
+    lazy var formatter: DateFormatter = {
+        let aFormatter = DateFormatter()
+        aFormatter.timeStyle = .medium
+        aFormatter.dateStyle = .medium
+        return aFormatter
+    }()
+    
     var tabItem: UITabBarItem {
         let buttonImage = EarthQuakeConstants.Images.settings
         let retButton = UITabBarItem(title: EarthQuakeConstants.SettingsViewMetaData.itemTitle, image: buttonImage, tag: 1)
@@ -18,14 +27,18 @@ class SecondViewController: UIViewController, ProgramBuildable {
     }
     
     var webView: WKWebView?
+    var tableView: UITableView?
     var controllingEvent: EQFeature? {
         didSet {
-            guard let _ = controllingEvent  else { return }
+            guard let _ = controllingEvent  else {
+                view.subviews.forEach({ $0.removeFromSuperview() })
+                view.alpha = EarthQuakeConstants.SettingsViewMetaData.backGroundAlpha
+                return }
+            
             if NetworkSensor.isConnectedToNetwork(wifiOnly: false) {
                 makeWebView()
             } else {
-                // Build the local page here...
-                NetworkSensor.shared.start()
+                makeLocalView()
             }
         }
     }
@@ -33,33 +46,20 @@ class SecondViewController: UIViewController, ProgramBuildable {
     override func loadView() {
         super.loadView()
         createControls()
-        positionControls()
         NetworkSensor.shared.addObserver(observer: self)
     }
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-        guard let webView = webView else { return }
-        webView.frame.size = size
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        guard let web = webView else { return }
-        web.stopLoading()
-        createControls()
-        webView = nil
+        if let webView = webView {
+            webView.frame.size = size
+        } else if let tableView = tableView {
+            tableView.frame.size = size
+        }
     }
     
     func createControls() {
         guard let view = makeBackgroundView() else { return }
         self.view = view
-    }
-    
-    func positionControls() {
-        if #available(iOS 12.0, *) {
-            os_log(OSLogType.info, "Here is where we set the constraints to position the controls for the %{public}@ view", EarthQuakeConstants.SettingsViewMetaData.itemTitle)
-        } else {
-            // Fallback on earlier versions
-        }
     }
 }
 
@@ -77,36 +77,104 @@ fileprivate extension SecondViewController {
     
     func makeWebView() {
         guard let urlString = controllingEvent?.properties.url,
-            let url = URL(string: urlString) else { return }
+            let url = URL(string: urlString),
+            let frame = UIApplication.shared.windows.first?.frame else { return }
         
         let request = URLRequest(url: url)
         let config = WKWebViewConfiguration()
         config.allowsAirPlayForMediaPlayback = false
-        let web = WKWebView(frame: .zero, configuration: config)
+        let web = WKWebView(frame: frame, configuration: config)
         web.load(request)
-        web.uiDelegate = self
-        view = web
+        
+        swapIn(web)
+        webView = web
     }
     
     func makeLocalView() {
+        guard let frame = UIApplication.shared.windows.first?.frame else { return }
+        let newView = UITableView(frame: frame, style: .plain)
+        newView.register(DetailTableViewCell.self, forCellReuseIdentifier: detailCellID)
+        newView.dataSource = self
+        newView.delegate = self
+        newView.reloadData()
         
+        swapIn(newView)
+        tableView = newView
+    }
+    
+    func swapIn(_ newView: UIView) {
+        view.alpha = 1
+        view.subviews.forEach({ $0.removeFromSuperview() })
+        view.addSubview(newView)
+    }
+}
+
+extension SecondViewController: UITableViewDelegate, UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return DetailViewFields.allCases.count
+    }
+    
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        let key = DetailViewFields.allCases[indexPath.row]
+        guard let detailCell = cell as? DetailTableViewCell,
+            let event = controllingEvent else { return }
+        var displayValue = ""
+        
+        switch key {
+        case .alert:
+            displayValue = event.properties.alert.isEmpty ? EarthQuakeConstants.SettingsViewMetaData.notGiven : event.properties.alert
+            
+        case .depth:
+            displayValue = "\(event.geometry.coordinates.depth) km"
+            
+        case .eventDate:
+            displayValue = formatter.string(from: event.properties.eventTime)
+            
+        case .lastSenseDate:
+            displayValue = formatter.string(from: event.properties.lastUpdated)
+            
+        case .latitude:
+            displayValue = "\(event.geometry.coordinates.latitude)"
+            
+        case .longitude:
+            displayValue = "\(event.geometry.coordinates.longitude)"
+            
+        case .name:
+            displayValue = event.properties.place
+            
+        case .magnitude:
+            displayValue = "\(event.properties.mag)"
+        }
+        
+        detailCell.textLabel?.text = displayValue
+        detailCell.textLabel?.font = EarthQuakeConstants.Fonts.valueFont
+        
+        detailCell.detailTextLabel?.text = key.stringValue
+        detailCell.detailTextLabel?.font = EarthQuakeConstants.Fonts.boldCaption
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        return tableView.dequeueReusableCell(withIdentifier: detailCellID, for: indexPath) as! DetailTableViewCell
     }
 }
 
 extension SecondViewController: NetworkAvailabilityWatcher {
     func networkStatusChangedTo(_ status: NetworkStatus) {
         if status != .unavailable {
-            makeWebView()
+            DispatchQueue.main.async {
+                self.makeWebView()
+            }
             NetworkSensor.shared.stop()
         }
     }
 }
 
-extension SecondViewController: WKUIDelegate {
+class DetailTableViewCell: UITableViewCell {
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
-}
-
-// MARK: - Position controls
-fileprivate extension SecondViewController {
-    
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: .subtitle, reuseIdentifier: reuseIdentifier)
+    }
 }

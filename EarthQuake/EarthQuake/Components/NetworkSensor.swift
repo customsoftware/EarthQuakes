@@ -24,14 +24,26 @@ class NetworkSensor {
     static var shared = NetworkSensor()
     
     private var delegates = [NetworkAvailabilityWatcher]()
-    private var currentNetworkStatus = NetworkStatus.unavailable
+    private var currentNetworkStatus = NetworkStatus.unavailable {
+        didSet {
+            if oldValue != currentNetworkStatus {
+                self.delegates.forEach({ $0.networkStatusChangedTo(currentNetworkStatus) })
+            }
+            if currentNetworkStatus != .unavailable {
+                stop()
+            } else {
+                start()
+            }
+        }
+    }
     private var timer: Timer?
     
     init() {
         delegates.append(self)
-        if !NetworkSensor.isConnectedToNetwork(wifiOnly: false) {
-            start()
-        }
+    }
+    
+    func remoteStart() {
+        _ = NetworkSensor.isConnectedToNetwork(wifiOnly: false)
     }
     
     func start() {
@@ -51,9 +63,6 @@ class NetworkSensor {
                     newStatus = .unavailable
                 }
                 
-                if newStatus != self.currentNetworkStatus {
-                    self.delegates.forEach({ $0.networkStatusChangedTo(newStatus) })
-                }
                 self.currentNetworkStatus = newStatus
             })
         }
@@ -112,15 +121,15 @@ class NetworkSensor {
                 retValue = (isReachable && !needsConnection)
             }
         }
-        
+        if !retValue {
+            NetworkSensor.shared.start()
+        }
         return retValue
     }
 }
 
 extension NetworkSensor: NetworkAvailabilityWatcher {
     func networkStatusChangedTo(_ status: NetworkStatus) {
-        if status != .unavailable {
-            stop()
-        }
+        currentNetworkStatus = status
     }
 }
