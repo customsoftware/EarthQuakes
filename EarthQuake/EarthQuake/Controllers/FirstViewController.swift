@@ -58,7 +58,6 @@ class FirstViewController: UITableViewController, ProgramBuildable {
                 errorString = EarthQuakeConstants.HomeViewMetaData.ErrorString.noData
                 NetworkSensor.shared.start()
                 segmentControl.isEnabled = false
-                
             case RESTErrors.unknown:
                 errorString = String(format: EarthQuakeConstants.HomeViewMetaData.ErrorString.unKnown, error.localizedDescription)
             case is DecodingError:
