@@ -131,9 +131,9 @@ fileprivate extension SecondViewController {
     }
     
     func loadCancelAlert() {
-        let alert = UIAlertController(title: "Slow Network", message: "The network is very slow. Would you like to continue to wait for the page to load or switch to local only mode for display of detail data?", preferredStyle: .alert)
-        let continueAction = UIAlertAction(title: "Continue Waiting", style: .cancel, handler: nil)
-        let cancelLoadAction = UIAlertAction(title: "Cancel and Switch To Local", style: .destructive) { (action) in
+        let alert = UIAlertController(title: EQConstants.Detail.badNetworkCaption, message: EQConstants.Detail.badNetworkMessage, preferredStyle: .alert)
+        let continueAction = UIAlertAction(title: EQConstants.Detail.badNetworkContinue, style: .cancel, handler: nil)
+        let cancelLoadAction = UIAlertAction(title: EQConstants.Detail.badNetworkBail, style: .destructive) { (action) in
             self.webView?.stopLoading()
             self.loadTimer?.invalidate()
             guard let tableView = self.makeLocalView() else { return }
