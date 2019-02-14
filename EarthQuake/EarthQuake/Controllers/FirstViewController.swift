@@ -68,7 +68,6 @@ class FirstViewController: UITableViewController, ProgramBuildable {
             return }
         
         detailView.controllingEvent = event
-        showDetailViewController(detailView, sender: nil)
     }
     
     func createControls() {
@@ -139,7 +138,8 @@ fileprivate extension FirstViewController {
     }
     
     func resetDetailView() {
-        guard let detail = splitViewController?.viewControllers.last as? SecondViewController else { return }
+        guard let detailNav = splitViewController?.viewControllers.last as? UINavigationController,
+            let detail = detailNav.viewControllers.last as? SecondViewController else { return }
         detail.controllingEvent = nil
     }
     

@@ -19,7 +19,10 @@ class HomeSplitViewController: UISplitViewController {
         let detailNav = UINavigationController(rootViewController: detail)
         viewControllers = [masterNav, detailNav]
         delegate = self
-        preferredDisplayMode = .automatic
+        preferredDisplayMode = .allVisible
+        if let nc = viewControllers.last as? UINavigationController {
+            nc.topViewController?.navigationItem.leftBarButtonItem = displayModeButtonItem
+        }
     }
 }
 
