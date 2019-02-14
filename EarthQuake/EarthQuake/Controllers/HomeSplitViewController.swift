@@ -18,7 +18,7 @@ class HomeSplitViewController: UISplitViewController {
         let masterNav = UINavigationController(rootViewController: master)
         viewControllers = [masterNav, detail]
         delegate = self
-        preferredDisplayMode = .automatic
+        preferredDisplayMode = .allVisible
     }
 }
 
