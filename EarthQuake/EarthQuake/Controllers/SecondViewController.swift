@@ -26,10 +26,11 @@ class SecondViewController: UIViewController, ProgramBuildable {
     
     private var webView: WKWebView?
     private var tableView: UITableView?
+    private var loadTimer: Timer?
     
     var controllingEvent: EQFeature? {
         didSet {
-            guard let _ = controllingEvent else {
+            guard let event = controllingEvent else {
                 resetView()
                 return }
             
@@ -41,6 +42,8 @@ class SecondViewController: UIViewController, ProgramBuildable {
                 guard let tableView = makeLocalView() else { return }
                 swapIn(tableView)
             }
+            
+            navigationItem.title = event.properties.place
         }
     }
     
@@ -65,7 +68,7 @@ class SecondViewController: UIViewController, ProgramBuildable {
 // MARK: - Control related
 fileprivate extension SecondViewController {
     func makeBackgroundView() -> UIView? {
-        guard let windowFrame = UIApplication.shared.windows.first?.frame else { return nil }
+        let windowFrame = self.view.frame
         let view = UIImageView(frame: windowFrame)
         view.image = EQConstants.Images.backGroundImage
         view.alpha = EQConstants.Detail.backGroundAlpha
@@ -78,10 +81,24 @@ fileprivate extension SecondViewController {
         guard let urlString = controllingEvent?.properties.url,
             let url = URL(string: urlString) else { return nil }
         
-        let request = URLRequest(url: url)
+        let request = URLRequest(url: url, cachePolicy: .reloadRevalidatingCacheData, timeoutInterval: EQConstants.Detail.detailLoadTimeoutInterval)
         let config = WKWebViewConfiguration()
         config.allowsAirPlayForMediaPlayback = false
         let web = WKWebView(frame: .zero, configuration: config)
+        loadTimer?.invalidate()
+        loadTimer = nil
+        loadTimer = Timer.scheduledTimer(withTimeInterval: EQConstants.Detail.detailLoadTimeoutInterval, repeats: true, block: { (atimer) in
+            guard let web = self.webView else {
+                self.loadTimer?.invalidate()
+                return
+            }
+            
+            if web.isLoading && web.estimatedProgress < 0.8 {
+                self.loadCancelAlert()
+            } else {
+                self.loadTimer?.invalidate()
+            }
+        })
         web.load(request)
         webView = web
         return web
@@ -106,9 +123,29 @@ fileprivate extension SecondViewController {
     }
     
     func resetView() {
+        loadTimer?.invalidate()
+        loadTimer = nil
+        navigationItem.title = ""
         view.subviews.forEach({ $0.removeFromSuperview() })
         createControls()
     }
+    
+    func loadCancelAlert() {
+        let alert = UIAlertController(title: EQConstants.Detail.badNetworkCaption, message: EQConstants.Detail.badNetworkMessage, preferredStyle: .alert)
+        let continueAction = UIAlertAction(title: EQConstants.Detail.badNetworkContinue, style: .cancel, handler: nil)
+        let cancelLoadAction = UIAlertAction(title: EQConstants.Detail.badNetworkBail, style: .destructive) { (action) in
+            self.webView?.stopLoading()
+            self.loadTimer?.invalidate()
+            guard let tableView = self.makeLocalView() else { return }
+            self.swapIn(tableView)
+        }
+        alert.addAction(cancelLoadAction)
+        alert.addAction(continueAction)
+        DispatchQueue.main.async {
+            self.present(alert, animated: true, completion: nil)
+        }
+    }
+    
 }
 
 extension SecondViewController: UITableViewDelegate, UITableViewDataSource {
