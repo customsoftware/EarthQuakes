@@ -24,7 +24,7 @@ struct EQConstants {
         static let altViewTitle = "4.5+ Earthquakes"
         static let alertTitle = "Data Fetch Alert"
         static let okTitle = "OK"
-        static let segmentOptions = ["OK", "Major"]
+        static let segmentOptions = ["Significant", "Major"]
         
         struct ErrorString {
             static let badURL = "A URL could not be built based upon the string passed in to the function. Please advise the developer for assistance."
@@ -40,6 +40,11 @@ struct EQConstants {
         static let backGroundAlpha: CGFloat = 0.4
         static let opaqueAlpha: CGFloat = 1.0
         static let notGiven = "Not given"
+        static let detailLoadTimeoutInterval: TimeInterval = 60.0
+        static let badNetworkMessage = "The network is very slow. Would you like to continue to wait for the page to load or switch to local only mode for display of detail data?"
+        static let badNetworkCaption = "Slow Network"
+        static let badNetworkContinue = "Continue Waiting"
+        static let badNetworkBail = "Cancel and Switch To Local"
     }
     
     struct API {

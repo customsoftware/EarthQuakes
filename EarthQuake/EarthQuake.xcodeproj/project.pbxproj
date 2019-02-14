@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4EF7C6652215ACFF008F2EF9 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4EF7C6642215ACFF008F2EF9 /* Extensions.swift */; };
 		905732EC2214D51F00D368A1 /* TableViewCells.swift in Sources */ = {isa = PBXBuildFile; fileRef = 905732EB2214D51F00D368A1 /* TableViewCells.swift */; };
 		905732ED2214E87300D368A1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 90D223C4221377E1005FB4C8 /* Assets.xcassets */; };
 		90C2DAF522139CB100585B33 /* Enums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90C2DAF422139CB100585B33 /* Enums.swift */; };
@@ -35,6 +36,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		4EF7C6642215ACFF008F2EF9 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		905732EB2214D51F00D368A1 /* TableViewCells.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewCells.swift; sourceTree = "<group>"; };
 		90C2DAF422139CB100585B33 /* Enums.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Enums.swift; sourceTree = "<group>"; };
 		90D223B8221377E0005FB4C8 /* EarthQuake.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EarthQuake.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -133,6 +135,7 @@
 				90C2DAF422139CB100585B33 /* Enums.swift */,
 				90E9F7DC2214BCD3009FB171 /* Models.swift */,
 				905732EB2214D51F00D368A1 /* TableViewCells.swift */,
+				4EF7C6642215ACFF008F2EF9 /* Extensions.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -253,6 +256,7 @@
 				90C2DAF522139CB100585B33 /* Enums.swift in Sources */,
 				90D223C0221377E0005FB4C8 /* SecondViewController.swift in Sources */,
 				90D223BC221377E0005FB4C8 /* AppDelegate.swift in Sources */,
+				4EF7C6652215ACFF008F2EF9 /* Extensions.swift in Sources */,
 				90D223BE221377E0005FB4C8 /* FirstViewController.swift in Sources */,
 				90D223EF221393BA005FB4C8 /* HomeSplitViewController.swift in Sources */,
 				90D223ED221392CB005FB4C8 /* NetworkSensor.swift in Sources */,
