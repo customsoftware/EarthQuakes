@@ -19,18 +19,52 @@ class EarthQuakeTests: XCTestCase {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
     }
 
+    func testFetchingMajor() {
+        // This is an example of a performance test case.
+        let expectation = self.expectation(description: "Major query")
+        let significantString = EarthQuakeConstants.APIMetaData.last30_4PlusURI
+        RESTEngine.fetchSignificantData(uri: significantString) { (results, error) in
+            if let _ = error {
+                XCTAssertTrue(false, "There should be no errors with this query when there's a network connection")
+            } else if let results = results {
+                XCTAssertTrue(results.count > 0, "There's at least one result with this query")
+            }
+            expectation.fulfill()
+        }
+        
+        waitForExpectations(timeout: 5, handler: nil)
+    }
+    
     func testFetching30Day() {
         // This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
+        let expectation = self.expectation(description: "30 significant query")
+        let significantString = EarthQuakeConstants.APIMetaData.last30DaysURI
+        RESTEngine.fetchSignificantData(uri: significantString) { (results, error) in
+            if let _ = error {
+                XCTAssertTrue(false, "There should be no errors with this query when there's a network connection")
+            } else if let results = results {
+                XCTAssertTrue(results.count > 0, "There's at least one result with this query")
+            }
+            expectation.fulfill()
         }
+        
+        waitForExpectations(timeout: 5, handler: nil)
     }
 
-    func testFetchingDetail() {
+    
+    func testBadQuery() {
         // This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
+        let expectation = self.expectation(description: "Bad query")
+        let significantString = "http://www.apple.com"
+        RESTEngine.fetchSignificantData(uri: significantString) { (results, error) in
+            if let _ = error {
+                XCTAssertTrue(true, "There should bean error with this query when there's a network connection")
+            } else if let results = results {
+                XCTAssertTrue(results.count > 0, "This shouldn't work")
+            }
+            expectation.fulfill()
         }
+        
+        waitForExpectations(timeout: 5, handler: nil)
     }
-
 }
