@@ -1,6 +1,6 @@
 //
 //  Models.swift
-//  EarthQuake
+//  EQ
 //
 //  Created by Kenneth Cluff on 2/13/19.
 //  Copyright © 2019 Kenneth Cluff. All rights reserved.
@@ -31,11 +31,11 @@ struct EQFeature: Codable {
     let id: String
     
     init(with dictionary: [String: Any]) {
-        type = dictionary["type"] as! String
-        id = dictionary["id"] as! String
-        let geoDictionary = dictionary["geometry"] as! [String: Any]
+        type = dictionary[EQConstants.API.JSON.Features.typeKey] as! String
+        id = dictionary[EQConstants.API.JSON.Features.idKey] as! String
+        let geoDictionary = dictionary[EQConstants.API.JSON.Features.geometryKey] as! [String: Any]
         geometry = EQGeometry(with: geoDictionary)
-        let propertyDictionary = dictionary["properties"] as! [String: Any]
+        let propertyDictionary = dictionary[EQConstants.API.JSON.Features.propertiesKey] as! [String: Any]
         properties = EQProperties(with: propertyDictionary)
     }
 }
@@ -74,31 +74,31 @@ struct EQProperties: Codable {
     }
     
     init(with dictionary: [String: Any]) {
-        mag = dictionary["mag"] as? Double ?? Double.nan
-        place = dictionary["place"] as? String ?? EarthQuakeConstants.APIMetaData.defaultEmptyString
-        time = dictionary["time"] as? Double ?? Double.nan
-        updated = dictionary["updated"] as? Double ?? Double.nan
-        tz = dictionary["tz"] as? Int ?? EarthQuakeConstants.APIMetaData.defaultEmptyInt
-        url = dictionary["url"] as? String ?? EarthQuakeConstants.APIMetaData.defaultEmptyString
-        detail = dictionary["detail"] as? String ?? EarthQuakeConstants.APIMetaData.defaultEmptyString
-        felt = dictionary["felt"] as? Int ?? EarthQuakeConstants.APIMetaData.defaultEmptyInt
-        cdi = dictionary["cdi"] as? Double ?? Double.nan
-        mmi = dictionary["mmi"] as? Double ?? Double.nan
-        alert = dictionary["alert"] as? String ?? EarthQuakeConstants.APIMetaData.defaultEmptyString
-        status = dictionary["status"] as? String ?? EarthQuakeConstants.APIMetaData.defaultEmptyString
-        tsunami = dictionary["tsunami"] as? Int ?? EarthQuakeConstants.APIMetaData.defaultEmptyInt
-        sig = dictionary["sig"] as? Int ?? EarthQuakeConstants.APIMetaData.defaultEmptyInt
-        net = dictionary["net"] as? String ?? EarthQuakeConstants.APIMetaData.defaultEmptyString
-        code = dictionary["code"] as? String ?? EarthQuakeConstants.APIMetaData.defaultEmptyString
-        ids = dictionary["ids"] as? String ?? EarthQuakeConstants.APIMetaData.defaultEmptyString
-        sources = dictionary["sources"] as? String ?? EarthQuakeConstants.APIMetaData.defaultEmptyString
-        types = dictionary["types"] as? String ?? EarthQuakeConstants.APIMetaData.defaultEmptyString
-        nts = dictionary["nts"] as? Int ?? EarthQuakeConstants.APIMetaData.defaultEmptyInt
-        dmin = dictionary["dmin"] as? Double ?? Double.nan
-        rms = dictionary["rms"] as? Double ?? Double.nan
-        gap = dictionary["gap"] as? Double ?? Double.nan
-        magType = dictionary["magType"] as? String ?? EarthQuakeConstants.APIMetaData.defaultEmptyString
-        type = dictionary["type"] as? String ?? EarthQuakeConstants.APIMetaData.defaultEmptyString
+        mag = dictionary[EQConstants.API.JSON.Properties.magnitude] as? Double ?? Double.nan
+        place = dictionary[EQConstants.API.JSON.Properties.location] as? String ?? EQConstants.emptyString
+        time = dictionary[EQConstants.API.JSON.Properties.whenOccured] as? Double ?? Double.nan
+        updated = dictionary[EQConstants.API.JSON.Properties.lastRecorded] as? Double ?? Double.nan
+        tz = dictionary[EQConstants.API.JSON.Properties.timeZone] as? Int ?? EQConstants.emptyInt
+        url = dictionary[EQConstants.API.JSON.Properties.eventURL] as? String ?? EQConstants.emptyString
+        detail = dictionary[EQConstants.API.JSON.Properties.detailURL] as? String ?? EQConstants.emptyString
+        felt = dictionary[EQConstants.API.JSON.Properties.felt] as? Int ?? EQConstants.emptyInt
+        cdi = dictionary[EQConstants.API.JSON.Properties.cdi] as? Double ?? Double.nan
+        mmi = dictionary[EQConstants.API.JSON.Properties.mmi] as? Double ?? Double.nan
+        alert = dictionary[EQConstants.API.JSON.Properties.alertType] as? String ?? EQConstants.emptyString
+        status = dictionary[EQConstants.API.JSON.Properties.status] as? String ?? EQConstants.emptyString
+        tsunami = dictionary[EQConstants.API.JSON.Properties.tsunamiType] as? Int ?? EQConstants.emptyInt
+        sig = dictionary[EQConstants.API.JSON.Properties.sig] as? Int ?? EQConstants.emptyInt
+        net = dictionary[EQConstants.API.JSON.Properties.net] as? String ?? EQConstants.emptyString
+        code = dictionary[EQConstants.API.JSON.Properties.code] as? String ?? EQConstants.emptyString
+        ids = dictionary[EQConstants.API.JSON.Properties.ids] as? String ?? EQConstants.emptyString
+        sources = dictionary[EQConstants.API.JSON.Properties.dataSources] as? String ?? EQConstants.emptyString
+        types = dictionary[EQConstants.API.JSON.Properties.types] as? String ?? EQConstants.emptyString
+        nts = dictionary[EQConstants.API.JSON.Properties.nts] as? Int ?? EQConstants.emptyInt
+        dmin = dictionary[EQConstants.API.JSON.Properties.dmin] as? Double ?? Double.nan
+        rms = dictionary[EQConstants.API.JSON.Properties.rms] as? Double ?? Double.nan
+        gap = dictionary[EQConstants.API.JSON.Properties.gap] as? Double ?? Double.nan
+        magType = dictionary[EQConstants.API.JSON.Properties.magType] as? String ?? EQConstants.emptyString
+        type = dictionary[EQConstants.API.JSON.Properties.type] as? String ?? EQConstants.emptyString
     }
 }
 
@@ -107,8 +107,8 @@ struct EQGeometry: Codable {
     let coordinates: EQGeometryCoordinate
     
     init(with dictionary: [String: Any]) {
-        type = dictionary["type"] as! String
-        let coordinateArray = dictionary["coordinates"] as! [Double]
+        type = dictionary[EQConstants.API.JSON.GeometryKeys.typeKey] as! String
+        let coordinateArray = dictionary[EQConstants.API.JSON.GeometryKeys.coordinateKey] as! [Double]
         coordinates = EQGeometryCoordinate(with: coordinateArray)
     }
 }
@@ -119,8 +119,8 @@ struct EQGeometryCoordinate: Codable {
     let depth: Double
     
     init(with array: [Double]) {
-        longitude = array[EarthQuakeConstants.APIMetaData.EQCoordinates.longitude]
-        latitude = array[EarthQuakeConstants.APIMetaData.EQCoordinates.latitude]
-        depth = array[EarthQuakeConstants.APIMetaData.EQCoordinates.depth]
+        longitude = array[EQConstants.API.Coord.longitude]
+        latitude = array[EQConstants.API.Coord.latitude]
+        depth = array[EQConstants.API.Coord.depth]
     }
 }

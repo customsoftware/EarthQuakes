@@ -1,6 +1,6 @@
 //
-//  EarthQuakeTests.swift
-//  EarthQuakeTests
+//  EQTests.swift
+//  EQTests
 //
 //  Created by Kenneth Cluff on 2/12/19.
 //  Copyright © 2019 Kenneth Cluff. All rights reserved.
@@ -9,7 +9,7 @@
 import XCTest
 @testable import EarthQuake
 
-class EarthQuakeTests: XCTestCase {
+class EQTests: XCTestCase {
 
     override func setUp() {
         // Put setup code here. This method is called before the invocation of each test method in the class.
@@ -22,7 +22,7 @@ class EarthQuakeTests: XCTestCase {
     func testFetchingMajor() {
         // This is an example of a performance test case.
         let expectation = self.expectation(description: "Major query")
-        let significantString = EarthQuakeConstants.APIMetaData.last30_4PlusURI
+        let significantString = EQConstants.API.last30_4PlusURI
         RESTEngine.fetchSignificantData(uri: significantString) { (results, error) in
             if let _ = error {
                 XCTAssertTrue(false, "There should be no errors with this query when there's a network connection")
@@ -38,7 +38,7 @@ class EarthQuakeTests: XCTestCase {
     func testFetching30Day() {
         // This is an example of a performance test case.
         let expectation = self.expectation(description: "30 significant query")
-        let significantString = EarthQuakeConstants.APIMetaData.last30DaysURI
+        let significantString = EQConstants.API.last30DaysURI
         RESTEngine.fetchSignificantData(uri: significantString) { (results, error) in
             if let _ = error {
                 XCTAssertTrue(false, "There should be no errors with this query when there's a network connection")

@@ -1,6 +1,6 @@
 //
 //  NetworkSensor.swift
-//  EarthQuake
+//  EQ
 //
 //  Created by Kenneth Cluff on 2/12/19.
 //  Copyright © 2019 Kenneth Cluff. All rights reserved.
@@ -114,7 +114,7 @@ class NetworkSensor {
     
     private func start() {
         if timer == nil {
-            timer = Timer.scheduledTimer(withTimeInterval: EarthQuakeConstants.APIMetaData.networkPollingDelay, repeats: true, block: { (aTimer) in
+            timer = Timer.scheduledTimer(withTimeInterval: EQConstants.API.networkPollingDelay, repeats: true, block: { (aTimer) in
                 let currentStatus = NetworkSensor.isConnectedToNetwork(wifiOnly: false)
                 let wifiStatus = NetworkSensor.isConnectedToNetwork()
                 let newStatus: NetworkStatus

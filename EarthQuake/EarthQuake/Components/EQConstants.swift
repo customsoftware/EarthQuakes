@@ -8,15 +8,17 @@
 
 import UIKit
 
-struct EarthQuakeConstants {
+struct EQConstants {
+    static let emptyString = ""
+    static let emptyInt = 0
+    
     struct Images {
         static let home = UIImage(named: "first")
         static let settings = UIImage(named: "second")
         static let backGroundImage = UIImage(named: "splash")
     }
     
-    struct HomeViewMetaData {
-        static let emptyString = ""
+    struct Home {
         static let itemTitle = "Home"
         static let viewTitle = "Significant Earthquake Events"
         static let altViewTitle = "4.5+ Earthquakes"
@@ -33,27 +35,69 @@ struct EarthQuakeConstants {
         }
     }
     
-    struct SettingsViewMetaData {
+    struct Detail {
         static let itemTitle = "Settings"
         static let backGroundAlpha: CGFloat = 0.4
         static let opaqueAlpha: CGFloat = 1.0
         static let notGiven = "Not given"
     }
     
-    struct APIMetaData {
+    struct API {
         static let restRoot = "https://earthquake.usgs.gov/fdsnws/event/1/"
         static let last30DaysURI = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/significant_month.geojson"
         static let last30_4PlusURI = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/4.5_month.geojson"
         static let archivedDataKey = "fetchedDataKey"
         
-        struct EQCoordinates {
+        struct Coord {
             static let longitude = 0
             static let latitude = 1
             static let depth = 2
         }
         
-        static let defaultEmptyString = ""
-        static let defaultEmptyInt = 0
+        struct JSON {
+            static let featuresKey = "features"
+            
+            struct Features {
+                static let typeKey = "type"
+                static let idKey = "id"
+                static let geometryKey = "geometry"
+                static let propertiesKey = "properties"
+            }
+            
+            struct Properties {
+                static let magnitude = "mag"
+                static let location = "place"
+                static let whenOccured = "time"
+                static let lastRecorded = "updated"
+                static let timeZone = "tz"
+                static let eventURL = "url"
+                static let detailURL = "detail"
+                static let felt = "felt"
+                static let cdi = "cdi"
+                static let mmi = "mmi"
+                static let alertType = "alert"
+                static let status = "status"
+                static let tsunamiType = "tsunami"
+                static let sig = "sig"
+                static let net = "net"
+                static let code = "code"
+                static let ids = "ids"
+                static let dataSources = "sources"
+                static let types = "types"
+                static let nts = "nts"
+                static let dmin = "dmin"
+                static let rms = "rms"
+                static let gap = "gap"
+                static let magType = "magType"
+                static let type = "type"
+            }
+            
+            struct GeometryKeys {
+                static let typeKey = "type"
+                static let coordinateKey = "coordinates"
+            }
+        }
+        
         static let networkPollingDelay: TimeInterval = 1
     }
     

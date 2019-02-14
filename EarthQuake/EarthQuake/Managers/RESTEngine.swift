@@ -1,6 +1,6 @@
 //
 //  RESTEngine.swift
-//  EarthQuake
+//  EQ
 //
 //  Created by Kenneth Cluff on 2/12/19.
 //  Copyright © 2019 Kenneth Cluff. All rights reserved.
@@ -14,7 +14,7 @@ typealias ResultHandler = ([EQFeature]?, Error?) -> Void
 struct RESTEngine {
     
     /**
-     This fetches the earthQuake data from the USGS servers. This is an asynchronous call using a closure to return data to the calling object.
+     This fetches the EQ data from the USGS servers. This is an asynchronous call using a closure to return data to the calling object.
      
      - Author:
      Ken Cluff
@@ -57,7 +57,7 @@ struct RESTEngine {
             return nil
         }
         guard let jsonObject = try? JSONSerialization.jsonObject(with: resultData, options: .allowFragments) as? [String: Any],
-            let features = jsonObject?["features"] as? [[String: Any]] else {
+            let features = jsonObject?[EQConstants.API.JSON.featuresKey] as? [[String: Any]] else {
                 fetchError = RESTErrors.dataDecoding
                 return nil
         }
@@ -67,7 +67,7 @@ struct RESTEngine {
             eqEvents.append(newFeature)
         })
         
-        UserDefaults.standard.set(dataString, forKey: EarthQuakeConstants.APIMetaData.archivedDataKey)
+        UserDefaults.standard.set(dataString, forKey: EQConstants.API.archivedDataKey)
         UserDefaults.standard.synchronize()
         return eqEvents
     }
@@ -76,7 +76,7 @@ struct RESTEngine {
         var events: [EQFeature]?
         var fetchError: Error?
         
-        if let dataString = UserDefaults.standard.string(forKey: EarthQuakeConstants.APIMetaData.archivedDataKey) {
+        if let dataString = UserDefaults.standard.string(forKey: EQConstants.API.archivedDataKey) {
             events = parse(dataString, fetchError: &fetchError)
         } else {
             fetchError = RESTErrors.noDataAvailable

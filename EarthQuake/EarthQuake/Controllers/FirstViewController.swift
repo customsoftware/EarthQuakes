@@ -1,6 +1,6 @@
 //
 //  FirstViewController.swift
-//  EarthQuake
+//  EQ
 //
 //  Created by Kenneth Cluff on 2/12/19.
 //  Copyright © 2019 Kenneth Cluff. All rights reserved.
@@ -13,8 +13,8 @@ class FirstViewController: UITableViewController, ProgramBuildable {
     private var segmentControl: UISegmentedControl!
     
     var tabItem: UITabBarItem {
-        let buttonImage = EarthQuakeConstants.Images.home
-        let retButton = UITabBarItem(title: EarthQuakeConstants.HomeViewMetaData.itemTitle, image: buttonImage, tag: 0)
+        let buttonImage = EQConstants.Images.home
+        let retButton = UITabBarItem(title: EQConstants.Home.itemTitle, image: buttonImage, tag: 0)
         return retButton
     }
     
@@ -29,8 +29,8 @@ class FirstViewController: UITableViewController, ProgramBuildable {
         super.loadView()
         createControls()
         tableView.register(QuakeTableViewCell.self, forCellReuseIdentifier: QuakeTableViewCell.cellID)
-        fetchResults(with: EarthQuakeConstants.APIMetaData.last30DaysURI)
-        navigationItem.title = EarthQuakeConstants.HomeViewMetaData.viewTitle
+        fetchResults(with: EQConstants.API.last30DaysURI)
+        navigationItem.title = EQConstants.Home.viewTitle
         NetworkSensor.shared.addObserver(observer: self)
     }
     
@@ -54,9 +54,9 @@ class FirstViewController: UITableViewController, ProgramBuildable {
         let event = eventList[indexPath.row]
         
         summaryCell.textLabel?.text = event.properties.place
-        summaryCell.textLabel?.font = EarthQuakeConstants.Fonts.valueFont
+        summaryCell.textLabel?.font = EQConstants.Fonts.valueFont
         summaryCell.detailTextLabel?.text = formatter.string(from: event.properties.eventTime)
-        summaryCell.detailTextLabel?.font = EarthQuakeConstants.Fonts.boldCaption
+        summaryCell.detailTextLabel?.font = EQConstants.Fonts.boldCaption
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -71,7 +71,7 @@ class FirstViewController: UITableViewController, ProgramBuildable {
     }
     
     func createControls() {
-        let searchOptions = UISegmentedControl(items: EarthQuakeConstants.HomeViewMetaData.segmentOptions)
+        let searchOptions = UISegmentedControl(items: EQConstants.Home.segmentOptions)
         searchOptions.addTarget(self, action: #selector(refetchData(_:)), for: .valueChanged)
         searchOptions.selectedSegmentIndex = 0
         segmentControl = searchOptions
@@ -104,21 +104,21 @@ fileprivate extension FirstViewController {
                 processEvents(events)
                 return
             }
-            var errorString = EarthQuakeConstants.HomeViewMetaData.emptyString
+            var errorString = EQConstants.emptyString
             switch error {
             case RESTErrors.badURLString:
-                errorString = EarthQuakeConstants.HomeViewMetaData.ErrorString.badURL
+                errorString = EQConstants.Home.ErrorString.badURL
             case RESTErrors.dataDecoding, RESTErrors.dataEncoding:
-                errorString = EarthQuakeConstants.HomeViewMetaData.ErrorString.coding
+                errorString = EQConstants.Home.ErrorString.coding
             case RESTErrors.noDataAvailable:
-                errorString = EarthQuakeConstants.HomeViewMetaData.ErrorString.noData
+                errorString = EQConstants.Home.ErrorString.noData
                 segmentControl.isEnabled = false
             case RESTErrors.unknown:
-                errorString = String(format: EarthQuakeConstants.HomeViewMetaData.ErrorString.unKnown, error.localizedDescription)
+                errorString = String(format: EQConstants.Home.ErrorString.unKnown, error.localizedDescription)
             case is DecodingError:
-                errorString = EarthQuakeConstants.HomeViewMetaData.ErrorString.decodeError
+                errorString = EQConstants.Home.ErrorString.decodeError
             default:
-                errorString = String(format: EarthQuakeConstants.HomeViewMetaData.ErrorString.unKnown, error.localizedDescription)
+                errorString = String(format: EQConstants.Home.ErrorString.unKnown, error.localizedDescription)
             }
             
             throwUserAlert(with: errorString)
@@ -126,9 +126,9 @@ fileprivate extension FirstViewController {
     }
     
     func updateTitleForNewOption(_ sender: UISegmentedControl) {
-        var titleString = EarthQuakeConstants.HomeViewMetaData.viewTitle
+        var titleString = EQConstants.Home.viewTitle
         if sender.selectedSegmentIndex == 1 {
-            titleString = EarthQuakeConstants.HomeViewMetaData.altViewTitle
+            titleString = EQConstants.Home.altViewTitle
         }
         
         if titleString != navigationItem.title {
@@ -162,8 +162,8 @@ fileprivate extension FirstViewController {
     }
     
     func throwUserAlert(with alertString: String) {
-        let alert = UIAlertController(title: EarthQuakeConstants.HomeViewMetaData.alertTitle, message: alertString, preferredStyle: .alert)
-        let okAction = UIAlertAction(title: EarthQuakeConstants.HomeViewMetaData.okTitle, style: .default, handler: nil)
+        let alert = UIAlertController(title: EQConstants.Home.alertTitle, message: alertString, preferredStyle: .alert)
+        let okAction = UIAlertAction(title: EQConstants.Home.okTitle, style: .default, handler: nil)
         alert.addAction(okAction)
         DispatchQueue.main.async {
             self.present(alert, animated: true, completion: nil)

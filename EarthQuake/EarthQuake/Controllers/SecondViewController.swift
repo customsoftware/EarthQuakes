@@ -1,6 +1,6 @@
 //
 //  SecondViewController.swift
-//  EarthQuake
+//  EQ
 //
 //  Created by Kenneth Cluff on 2/12/19.
 //  Copyright © 2019 Kenneth Cluff. All rights reserved.
@@ -19,8 +19,8 @@ class SecondViewController: UIViewController, ProgramBuildable {
     }()
     
     var tabItem: UITabBarItem {
-        let buttonImage = EarthQuakeConstants.Images.settings
-        let retButton = UITabBarItem(title: EarthQuakeConstants.SettingsViewMetaData.itemTitle, image: buttonImage, tag: 1)
+        let buttonImage = EQConstants.Images.settings
+        let retButton = UITabBarItem(title: EQConstants.Detail.itemTitle, image: buttonImage, tag: 1)
         return retButton
     }
     
@@ -67,8 +67,8 @@ fileprivate extension SecondViewController {
     func makeBackgroundView() -> UIView? {
         guard let windowFrame = UIApplication.shared.windows.first?.frame else { return nil }
         let view = UIImageView(frame: windowFrame)
-        view.image = EarthQuakeConstants.Images.backGroundImage
-        view.alpha = EarthQuakeConstants.SettingsViewMetaData.backGroundAlpha
+        view.image = EQConstants.Images.backGroundImage
+        view.alpha = EQConstants.Detail.backGroundAlpha
         view.backgroundColor = .white
         view.contentMode = .scaleAspectFill
         return view
@@ -101,7 +101,7 @@ fileprivate extension SecondViewController {
     
     func swapIn(_ newView: UIView) {
         resetView()
-        view.alpha = EarthQuakeConstants.SettingsViewMetaData.opaqueAlpha
+        view.alpha = EQConstants.Detail.opaqueAlpha
         view.addSubview(newView)
     }
     
@@ -124,7 +124,7 @@ extension SecondViewController: UITableViewDelegate, UITableViewDataSource {
         
         switch key {
         case .alert:
-            displayValue = event.properties.alert.isEmpty ? EarthQuakeConstants.SettingsViewMetaData.notGiven : event.properties.alert
+            displayValue = event.properties.alert.isEmpty ? EQConstants.Detail.notGiven : event.properties.alert
         case .depth:
             displayValue = "\(event.geometry.coordinates.depth) km"
         case .eventDate:
@@ -142,9 +142,9 @@ extension SecondViewController: UITableViewDelegate, UITableViewDataSource {
         }
         
         detailCell.textLabel?.text = displayValue
-        detailCell.textLabel?.font = EarthQuakeConstants.Fonts.valueFont
+        detailCell.textLabel?.font = EQConstants.Fonts.valueFont
         detailCell.detailTextLabel?.text = key.stringValue
-        detailCell.detailTextLabel?.font = EarthQuakeConstants.Fonts.boldCaption
+        detailCell.detailTextLabel?.font = EQConstants.Fonts.boldCaption
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
