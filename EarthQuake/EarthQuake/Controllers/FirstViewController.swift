@@ -67,7 +67,6 @@ class FirstViewController: UITableViewController, ProgramBuildable {
             return }
         
         detailView.controllingEvent = event
-//        showDetailViewController(detailView, sender: nil)
     }
     
     func createControls() {
