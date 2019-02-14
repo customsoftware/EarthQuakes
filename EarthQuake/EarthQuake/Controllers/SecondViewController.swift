@@ -65,7 +65,8 @@ class SecondViewController: UIViewController, ProgramBuildable {
 // MARK: - Control related
 fileprivate extension SecondViewController {
     func makeBackgroundView() -> UIView? {
-        guard let windowFrame = UIApplication.shared.windows.first?.frame else { return nil }
+        let windowFrame = self.view.frame
+//        guard let windowFrame = UIApplication.shared.windows.first?.frame else { return nil }
         let view = UIImageView(frame: windowFrame)
         view.image = EQConstants.Images.backGroundImage
         view.alpha = EQConstants.Detail.backGroundAlpha

@@ -62,7 +62,8 @@ class FirstViewController: UITableViewController, ProgramBuildable {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let event = eventList[indexPath.row]
         
-        guard let detailView = splitViewController?.viewControllers.last as? SecondViewController  else {
+        guard let detailNav = splitViewController?.viewControllers.last as? UINavigationController,
+            let detailView = detailNav.viewControllers.first as? SecondViewController  else {
             showDetailView(with: event)
             return }
         
