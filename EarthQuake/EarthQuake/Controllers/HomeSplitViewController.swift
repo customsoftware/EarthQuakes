@@ -27,14 +27,6 @@ class HomeSplitViewController: UISplitViewController {
     
     override func loadView() {
         super.loadView()
-//        let masterNav = UINavigationController(rootViewController: master)
-//        let detailNav = UINavigationController(rootViewController: detail)
-//        viewControllers = [masterNav, detailNav]
-//        delegate = self
-//        preferredDisplayMode = .allVisible
-//        if let nc = viewControllers.last as? UINavigationController {
-//            nc.topViewController?.navigationItem.leftBarButtonItem = displayModeButtonItem
-//        }
     }
 }
 
