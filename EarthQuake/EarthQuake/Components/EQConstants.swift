@@ -40,6 +40,7 @@ struct EQConstants {
         static let backGroundAlpha: CGFloat = 0.4
         static let opaqueAlpha: CGFloat = 1.0
         static let notGiven = "Not given"
+        static let detailLoadTimeoutInterval: TimeInterval = 60.0
     }
     
     struct API {
