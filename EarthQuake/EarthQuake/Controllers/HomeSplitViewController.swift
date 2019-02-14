@@ -16,7 +16,8 @@ class HomeSplitViewController: UISplitViewController {
     override func loadView() {
         super.loadView()
         let masterNav = UINavigationController(rootViewController: master)
-        viewControllers = [masterNav, detail]
+        let detailNav = UINavigationController(rootViewController: detail)
+        viewControllers = [masterNav, detailNav]
         delegate = self
         preferredDisplayMode = .allVisible
     }
