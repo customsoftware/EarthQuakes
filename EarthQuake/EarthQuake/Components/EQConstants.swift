@@ -24,7 +24,7 @@ struct EQConstants {
         static let altViewTitle = "4.5+ Earthquakes"
         static let alertTitle = "Data Fetch Alert"
         static let okTitle = "OK"
-        static let segmentOptions = ["OK", "Major"]
+        static let segmentOptions = ["Significant", "Major"]
         
         struct ErrorString {
             static let badURL = "A URL could not be built based upon the string passed in to the function. Please advise the developer for assistance."
